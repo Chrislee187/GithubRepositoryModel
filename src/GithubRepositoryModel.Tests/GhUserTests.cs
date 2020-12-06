@@ -8,8 +8,6 @@ namespace GithubRepositoryModel.Tests
 {
     public class GhUserTests : GithubTestsBase
     {
-        private const string Login = "Chrislee187";
-        private const string RepoName = "Emma";
         private IGithub _github;
 
         [OneTimeSetUp]

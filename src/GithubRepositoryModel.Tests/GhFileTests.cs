@@ -8,9 +8,6 @@ namespace GithubRepositoryModel.Tests
 {
     public class GhFileTests : GithubTestsBase
     {
-        private const string Login = "chrislee187";
-        private const string RepoName = "Emma";
-
         private GhFile _file;
 
         [OneTimeSetUp]

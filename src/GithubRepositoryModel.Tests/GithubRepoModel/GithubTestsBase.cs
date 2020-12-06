@@ -8,7 +8,11 @@ namespace GithubRepositoryModel.Tests.GithubRepoModel
         protected readonly GitHubClient ApiClient;
         protected IGithub Github;
 
-        public GithubTestsBase()
+        protected const string Login = "chrislee187";
+        protected const string RepoName = "GithubRepositoryModel";
+        protected const string DefaultBranchName = "main";
+
+        protected GithubTestsBase()
         {
             ApiClient = new GitHubClient(new ProductHeaderValue("EmmaTests"))
             {

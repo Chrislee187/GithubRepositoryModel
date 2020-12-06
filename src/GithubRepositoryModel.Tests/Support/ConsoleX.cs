@@ -7,23 +7,22 @@ namespace GithubRepositoryModel.Tests.Support
     {
         private static int _folderDepth;
 
-        public static async Task DumpGithubFolder(GhFolder repo)
+        public static async Task DumpGithubFolder(GhFolder folder)
         {
             _folderDepth++;
-            var ghFolders = await repo.GetFolders();
+            var ghFolders = await folder.GetFolders();
 
-            foreach (var folder in ghFolders)
+            foreach (var subFolder in ghFolders)
             {
-                Console.WriteLine($"{new string('>', _folderDepth)}{folder.Path}");
-                foreach (var file in await folder.GetFiles())
+                Console.WriteLine($"{new string('>', _folderDepth)}{subFolder.Path}");
+                foreach (var file in await subFolder.GetFiles())
                 {
 
                     Console.WriteLine($"{new string(' ', _folderDepth)}{file.Path} : {file.Size} content length");
                 }
-                await DumpGithubFolder(folder);
-
-
+                await DumpGithubFolder(subFolder);
             }
+
             _folderDepth--;
         }
 

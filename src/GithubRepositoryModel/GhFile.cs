@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GithubRepositoryModel.InMemoryCache;
 using Octokit;
 
 namespace GithubRepositoryModel
@@ -47,9 +49,8 @@ namespace GithubRepositoryModel
             _github = github;
             Repository = repository;
             Branch = branch;
-
   
-            _lastCommitProvider = () => _github.ApiClient.Repository
+            _lastCommitProvider = () => github.ApiClient.Repository
                 .Commit.GetAll(Repository.Id, CommitRequestFilter.ByPath(Path)).Result.FirstOrDefault();
         }
 
@@ -58,20 +59,15 @@ namespace GithubRepositoryModel
             rc.EncodedContent, rc.Target, rc.SubmoduleGitUrl)
         { }
 
-        #region Api Helpers
-        public static async Task<RepositoryContent> GetContent(
-            IGithub github,
-            IGhRepository repository,
-            IGhBranch branch,
-            string path)
-        {
-            var (content, _) = await GhLogging.LogAsyncTask(() =>
-                github.ApiClient.Repository.Content
-                    .GetAllContentsByRef(repository.Id, path, branch.Name),
-                $"{nameof(Github)}.{nameof(GhFile)}.{nameof(GetContent)}");
+        public override string ToString() => Path;
 
-            return content[0];
-        }
+        #region Api Helpers
+        public static async Task<RepositoryContent> GetContent(IGithub github, IGhRepository repository, IGhBranch branch, string path) => 
+            await ApiHelper.CachedApiCall<RepositoryContent, IReadOnlyList<RepositoryContent>>(
+                new CacheKey(repository.Owner.Login, repository.Name, typeof(RepositoryContent)),
+                () => github.ApiClient.Repository.Content
+                    .GetAllContentsByRef(repository.Id, path, branch.Name),
+                (content) => content[0], $"{nameof(Github)}.{nameof(GhFolder)}.{nameof(GetContent)}");
 
         #endregion
     }

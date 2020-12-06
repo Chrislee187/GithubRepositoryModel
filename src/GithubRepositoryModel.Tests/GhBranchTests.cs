@@ -7,9 +7,6 @@ namespace GithubRepositoryModel.Tests
 {
     public class GhBranchTests : GithubTestsBase
     {
-        private const string Login = "chrislee187";
-        private const string RepoName = "Emma";
-
         private IGhRepository _repo;
         private IGhBranch _branch;
 
@@ -21,12 +18,15 @@ namespace GithubRepositoryModel.Tests
         }
 
         [Test]
-        public void Can_get_Root_of_branch()
+        public void Can_get_default_branch()
         {
-            var branchRoot = _branch.Root;
+            _branch.Name.ShouldBe(_repo.DefaultBranch);
+        }
 
-            branchRoot.Path.ShouldBeNull();
-
+        [Test]
+        public void Can_get_branch_root()
+        {
+            _branch.Root.ShouldNotBeNull();
         }
     }
 }

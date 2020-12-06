@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GithubRepositoryModel.InMemoryCache;
 using Octokit;
 
 namespace GithubRepositoryModel
@@ -16,6 +17,8 @@ namespace GithubRepositoryModel
             
         }
 
+
+        public new GhUser Owner => new GhUser(_github, base.Owner);
         // TODO: Commits - github.ApiClient.Repository.Commit.
 
         public async Task<IGhBranch> GetBranch(string branchName) => 
@@ -33,26 +36,26 @@ namespace GithubRepositoryModel
         }
 
         #region Api Helpers
+
+        public static void ClearApiCache()
+        {
+            
+        }
+
         public static async Task<IGhRepository> Get(IGithub github, string url) => throw new NotImplementedException();
-        public static async Task<IGhRepository> Get(IGithub github, string userName, string repoName)
-        {
-            var (repo, _) = await GhLogging.LogAsyncTask(() =>
-                    github.ApiClient.Repository.Get(userName, repoName),
-                $"{nameof(Github)}.{nameof(GhRepository)}.{nameof(Get)}");
-
-            return new GhRepository(github, repo);
-        }
-
-        public static async Task<IEnumerable<IGhRepository>> All(IGithub github, string userName)
-        {
-            var (repos, _) = await GhLogging.LogAsyncTask(() =>
-                    github.ApiClient.Repository.GetAllForUser(userName),
-                $"{nameof(Github)}.{nameof(GhRepository)}.{nameof(All)}");
+        public static async Task<IGhRepository> Get(IGithub github, string userName, string repoName) => 
+            await ApiHelper.CachedApiCall<IGhRepository, Repository>(
+                new CacheKey(userName, repoName, typeof(IGhRepository)),
+            () => github.ApiClient.Repository.Get(userName, repoName), 
+            (r) => new GhRepository(github, r), $"{nameof(Github)}.{nameof(GhRepository)}.{nameof(Get)}");
 
 
-            return repos
-                .Select(r => new GhRepository(github, r));
-        }
+        public static async Task<IEnumerable<IGhRepository>> All(IGithub github, string userName) => 
+            await ApiHelper.CachedApiCall<IEnumerable<IGhRepository>, IReadOnlyList<Repository>>(
+                new CacheKey(userName, typeof(IEnumerable<IGhRepository>)),
+            () => github.ApiClient.Repository.GetAllForUser(userName),
+            (repos) => repos.Select(r => new GhRepository(github, r)), 
+            $"{nameof(Github)}.{nameof(GhRepository)}.{nameof(All)}");
 
         #endregion
     }

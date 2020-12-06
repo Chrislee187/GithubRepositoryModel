@@ -7,7 +7,6 @@ namespace GithubRepositoryModel.Tests
     public class GithubModelSpikes : GithubTestsBase
     {
         private Task<IGhRepository> _repository;
-        private const string Login = "chrislee187";
 
         [Test]
         public void Spike()

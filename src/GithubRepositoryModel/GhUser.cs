@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GithubRepositoryModel.InMemoryCache;
 using Octokit;
 
 namespace GithubRepositoryModel
@@ -8,7 +9,7 @@ namespace GithubRepositoryModel
     {
         private readonly IGithub _gitHub;
 
-        private GhUser(IGithub gitHub, User u) : this(u)
+        internal GhUser(IGithub gitHub, User u) : this(u)
         {
             _gitHub = gitHub;
         }
@@ -27,14 +28,12 @@ namespace GithubRepositoryModel
         }
 
         #region Api Helpers
-        public static async Task<IGhUser> Get(IGithub github, string userName)
-        {
-            var (user, _)= await GhLogging.LogAsyncTask(() => 
-                github.ApiClient.User.Get(userName),
-                    $"{nameof(Github)}.{nameof(GhUser)}.{nameof(Get)}");
-
-            return new GhUser(github, user);
-        }
+        public static async Task<IGhUser> Get(IGithub github, string userName) => 
+            await ApiHelper.CachedApiCall<IGhUser, User>(
+                new CacheKey(userName, typeof(IGhUser)), 
+            () => github.ApiClient.User.Get(userName), 
+            (u) => new GhUser(github, u), 
+            $"{nameof(Github)}.{nameof(User)}.{nameof(Get)}");
 
         #endregion
     }

@@ -9,9 +9,6 @@ namespace GithubRepositoryModel.Tests
 {
     public class GhFolderTests : GithubTestsBase
     {
-        private const string Login = "chrislee187";
-        private const string RepoName = "Emma";
-
         private GhFolder _folder;
 
         [OneTimeSetUp]
@@ -27,9 +24,9 @@ namespace GithubRepositoryModel.Tests
         {
             _folder.Path.ShouldBeNull();
             var ghFolders = await _folder.GetFolders();
-            var ghFiles = await _folder.GetFiles();
-
             ghFolders.Count().ShouldBeGreaterThan(0);
+            
+            var ghFiles = await _folder.GetFiles();
             ghFiles.Count().ShouldBeGreaterThan(0);
 
             await ConsoleX.DumpGithubFolder(_folder);

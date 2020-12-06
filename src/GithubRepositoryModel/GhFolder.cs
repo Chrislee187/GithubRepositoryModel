@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GithubRepositoryModel.InMemoryCache;
 using Octokit;
 
 namespace GithubRepositoryModel
@@ -74,6 +75,8 @@ namespace GithubRepositoryModel
             _folderReadFromGit = true;
         }
 
+        public override string ToString() => Path;
+
         #region Api Helpers
 
         public static async Task<IEnumerable<RepositoryContent>> GetContent(
@@ -81,14 +84,11 @@ namespace GithubRepositoryModel
             IGhRepository repository, 
             IGhBranch branch, 
             string path = null)
-        {
-            var (contents, _) = await GhLogging.LogAsyncTask(() =>
-                    github.ApiClient.Repository.Content
-                        .GetAllContentsByRef(repository.Id, path ?? ".", branch.Name),
-                        $"{nameof(Github)}.{nameof(GhFolder)}.{nameof(GetContent)}");
-
-            return contents;
-        }
+            => await ApiHelper.CachedApiCall<IEnumerable<RepositoryContent>, IReadOnlyList<RepositoryContent>>(
+                new CacheKey(repository.Owner.Login, repository.Name, branch.Name, path, typeof(IEnumerable<RepositoryContent>)),
+                () => github.ApiClient.Repository.Content
+                    .GetAllContentsByRef(repository.Id, path ?? ".", branch.Name),
+                (branches) => branches, $"{nameof(Github)}.{nameof(GhFolder)}.{nameof(GetContent)}");
 
         #endregion
     }

@@ -14,6 +14,7 @@ namespace GithubRepositoryModel
         DateTimeOffset UpdatedAt { get; }
         string DefaultBranch { get; }
         string Name { get; }
+        GhUser Owner { get; }
         DateTimeOffset? PushedAt { get; }
 
         // TODO: Add remaining members from Repository
