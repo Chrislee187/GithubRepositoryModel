@@ -8,7 +8,7 @@ namespace GithubRepositoryModel.Tests.GithubRepoModel
         protected readonly GitHubClient ApiClient;
         protected IGithub Github;
 
-        protected const string Login = "chrislee187";
+        protected const string UserName = "ChrisLee187";
         protected const string RepoName = "GithubRepositoryModel";
         protected const string DefaultBranchName = "main";
 

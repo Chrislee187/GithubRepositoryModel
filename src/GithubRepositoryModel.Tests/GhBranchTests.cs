@@ -13,7 +13,7 @@ namespace GithubRepositoryModel.Tests
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            _repo = await Github.Repository(Login, RepoName);
+            _repo = await Github.Repository(UserName, RepoName);
             _branch = await _repo.GetBranch(_repo.DefaultBranch);
         }
 

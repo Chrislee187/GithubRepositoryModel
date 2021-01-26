@@ -14,7 +14,7 @@ namespace GithubRepositoryModel.Tests
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            _repo = await Github.Repository(Login, RepoName);
+            _repo = await Github.Repository(UserName, RepoName);
         }
 
         [TestCase(RepoName)]
@@ -36,7 +36,7 @@ namespace GithubRepositoryModel.Tests
         public async Task Spike()
         {
             var repositoryCommitsClient = Github.ApiClient.Repository.Commit;
-            var gitHubCommits = await repositoryCommitsClient.GetAll(Login, RepoName);
+            var gitHubCommits = await repositoryCommitsClient.GetAll(UserName, RepoName);
             var firstCommit = gitHubCommits.First();
             var lastCommit = gitHubCommits.Last();
             

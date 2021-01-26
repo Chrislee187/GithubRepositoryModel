@@ -15,7 +15,17 @@ namespace GithubRepositoryModel
 
         private GitHubCommit _lastCommit;
         private readonly Func<GitHubCommit> _lastCommitProvider;
-        public GitHubCommit LastCommit => _lastCommit ??= _lastCommitProvider() ?? new GitHubCommit();
+        public GitHubCommit LastCommit
+        {
+            get
+            {
+                if (_lastCommit == null)
+                {
+                    _lastCommit = _lastCommitProvider() ?? new GitHubCommit();
+                }
+                return _lastCommit;
+            }
+        }
 
         private string _content;
 

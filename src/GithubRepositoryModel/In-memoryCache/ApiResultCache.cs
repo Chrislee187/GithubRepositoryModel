@@ -72,11 +72,7 @@ namespace GithubRepositoryModel
         }
         protected bool Equals(CacheKey other)
         {
-            return UserName == other.UserName 
-                   && RepoName == other.RepoName 
-                   && BranchName == other.BranchName
-                   && Path == other.Path
-                   && Type == other.Type;
+            return UserName == other.UserName && RepoName == other.RepoName && BranchName == other.BranchName && Path == other.Path && Equals(Type, other.Type);
         }
 
         public override bool Equals(object obj)
@@ -89,7 +85,15 @@ namespace GithubRepositoryModel
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(UserName, RepoName, Type);
+            unchecked
+            {
+                var hashCode = (UserName != null ? UserName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (RepoName != null ? RepoName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (BranchName != null ? BranchName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Path != null ? Path.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Type != null ? Type.GetHashCode() : 0);
+                return hashCode;
+            }
         }
 
         public override string ToString()

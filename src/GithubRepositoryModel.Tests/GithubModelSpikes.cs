@@ -11,7 +11,7 @@ namespace GithubRepositoryModel.Tests
         [Test]
         public void Spike()
         {
-            _repository = Github.Repository(Login, "Emma");
+            _repository = Github.Repository(UserName, "Emma");
         }
     }
 }
