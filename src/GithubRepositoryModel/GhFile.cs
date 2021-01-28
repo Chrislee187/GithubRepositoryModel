@@ -59,7 +59,7 @@ namespace GithubRepositoryModel
             _github = github;
             Repository = repository;
             Branch = branch;
-  
+            Path = content.Path;
             _lastCommitProvider = () => github.ApiClient.Repository
                 .Commit.GetAll(Repository.Id, CommitRequestFilter.ByPath(Path)).Result.FirstOrDefault();
         }
@@ -74,7 +74,7 @@ namespace GithubRepositoryModel
         #region Api Helpers
         public static async Task<RepositoryContent> GetContent(IGithub github, IGhRepository repository, IGhBranch branch, string path) => 
             await ApiHelper.CachedApiCall<RepositoryContent, IReadOnlyList<RepositoryContent>>(
-                new CacheKey(repository.Owner.Login, repository.Name, typeof(RepositoryContent)),
+                new CacheKey(repository.Owner.Login, repository.Name, branch.Name, path, typeof(RepositoryContent)),
                 () => github.ApiClient.Repository.Content
                     .GetAllContentsByRef(repository.Id, path, branch.Name),
                 (content) => content[0], $"{nameof(Github)}.{nameof(GhFolder)}.{nameof(GetContent)}");

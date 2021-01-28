@@ -28,12 +28,14 @@ namespace GithubRepositoryModel
         }
 
         #region Api Helpers
-        public static async Task<IGhUser> Get(IGithub github, string userName) => 
-            await ApiHelper.CachedApiCall<IGhUser, User>(
-                new CacheKey(userName, typeof(IGhUser)), 
-            () => github.ApiClient.User.Get(userName), 
-            (u) => new GhUser(github, u), 
-            $"{nameof(Github)}.{nameof(User)}.{nameof(Get)}");
+        public static async Task<IGhUser> Get(IGithub github, string userName)
+        {
+            return await ApiHelper.CachedApiCall<IGhUser, User>(
+                new CacheKey(userName, typeof(IGhUser)),
+                () => github.ApiClient.User.Get(userName),
+                (u) => new GhUser(github, u),
+                $"{nameof(Github)}.{nameof(User)}.{nameof(Get)}");
+        }
 
         #endregion
     }

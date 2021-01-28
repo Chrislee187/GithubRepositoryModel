@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GithubRepositoryModel.Tests.GithubRepoModel;
@@ -9,6 +11,7 @@ namespace GithubRepositoryModel.Tests
     public class GhFileTests : GithubTestsBase
     {
         private GhFile _file;
+        private IEnumerable<GhFile> _files;
 
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
@@ -16,13 +19,16 @@ namespace GithubRepositoryModel.Tests
             var repo = await Github.Repository(UserName, RepoName);
             var branch = await repo.GetBranch(repo.DefaultBranch);
             var folder = branch.Root;
-            _file = (await folder.GetFiles()).First();
+            _files = await folder.GetFiles();
         }
 
         [Test]
         public void Can_get_file_content()
         {
-            _file.Content.Length.ShouldBeGreaterThan(0);
+            _files.Count().ShouldBeGreaterThan(1);
+            Console.WriteLine(_files.First().Content.Length);
+            Console.WriteLine(_files.Last().Content.Length);
+            _files.First().Content.ShouldNotBe(_files.Last().Content);
         }
     }
 }

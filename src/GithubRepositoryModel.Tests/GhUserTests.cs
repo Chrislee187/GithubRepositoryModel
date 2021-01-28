@@ -18,6 +18,7 @@ namespace GithubRepositoryModel.Tests
 
 
         [TestCase(UserName)]
+        [TestCase("chrislee187")]
         public async Task GetAGithubUser(string loginName)
         {
             var user = await _github.User(loginName);
@@ -26,11 +27,12 @@ namespace GithubRepositoryModel.Tests
         }
 
         [TestCase(RepoName)]
+        [TestCase("Methodbrary")]
         public async Task Can_get_a_Repository(string repoName)
         {
             var repo = await _github.Repository(UserName, repoName);
 
-            repo.Name.ShouldBe(RepoName);
+            repo.Name.ShouldBe(repoName);
             repo.PushedAt.HasValue.ShouldBeTrue();
             repo.PushedAt.Value.ShouldBeGreaterThan(DateTimeOffset.MinValue);
         }
