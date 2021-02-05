@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Chris Lee</Authors>
+    <Company />
+    <Product>Github Repository Model</Product>
+    <Description>Exposes a simple model to access the contents of a Github repository,</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://www.github.com/chrislee187/githubrepositorymodel</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>github git repository</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,5 +19,9 @@
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="COPY $(ProjectDir)bin\$(ConfigurationName)\*.nupkg D:\Public\Src\_MyNugetPackages" />
+  </Target>
 
 </Project>

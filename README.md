@@ -6,18 +6,17 @@ Wraps Github Api calls (via [Octokit](https://github.com/octokit/octokit.net)) i
 
 Currently only supports reading Repositories and there contents.
 
-Model follows basic pattern
+The follows has the following basic structure;
 
-- Setup a up ```Github``` client
-
-- Use the client to get a ```User```
-- a ```User``` has one more ```Repositories```
-- A ```Repository``` has one or more ```Branches()```
-- A ```Branch``` has a root ```Folder``` which contains further ```Folders``` and ```Files```
+- Given a `Github` client.
+- Use the client to get a `GhUser`.
+- a `GhUser` has one more `GhRepository`'s.
+- A `GhRepository` has one or more `GhBranch`'s.
+- A `GhBranch` has a root `GhFolder` which contains further `GhFolder`'s and `GhFile`'s.
 
 See the [folder tests](https://github.com/Chrislee187/GithubRepositoryModel/blob/main/src/GithubRepositoryModel.Tests/GhFolderTests.cs) for a simple example.
 
-## Future features
+## Possible future features
 
 - Commits
 - Better handling of date information
